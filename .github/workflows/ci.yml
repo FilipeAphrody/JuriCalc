@@ -1,0 +1,28 @@
+name: LexCalc Pro CI/CD & Hardening
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  security_quality_hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install black flake8 bandit safety pytest pytest-django pytest-cov pip-audit
+          
+      - name: Testes Funcionais & Coverage
+        env:
+          DJANGO_SETTINGS_MODULE: lexcalc.settings
+        run: pytest --cov=core --cov=engines
