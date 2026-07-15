@@ -43,6 +43,7 @@ Acesse a documentação da API em `http://localhost:8000/api/docs/`.
 O projeto é dividido em domínios específicos para garantir manutenibilidade:
 
 - **Auth & SaaS (`users`)**: Autenticação via JWT (SimpleJWT). Implementa o modelo de Multi-Tenancy através da entidade `Office` (Escritório), além de `Role` e `Membership` para controle de acesso (RBAC).
+- **Versionamento e Auditoria (`core`)**: Modelo `Calculation` unificado, e snapshots imutáveis (`CalculationVersion`) das entradas e saídas. Integração com Django Signals para geração automática e inviolável de logs no modelo `AuditLog`.
 - **Gestão de Clientes (`clients`)**: Cadastro centralizado de pessoas físicas e jurídicas atrelados ao escritório.
 - **Gestão de Processos (`lawsuits`)**: Controle de processos (com `cnj_number` indexado) vinculados aos clientes do escritório.
 - **Gestão de Documentos (`documents`)**: Upload e versionamento de arquivos vinculados a processos ou clientes.
