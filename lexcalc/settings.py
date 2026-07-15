@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s8e7+6*)ujr7198rp(%m-ldk1gt12gd$3#u7=3(eh8gzxt)h@0'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-8d4q#2a@r-_p(g%i=26e*!%*q%9)j1!52^n-q1d*w4g_3^7$z0')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -155,6 +156,25 @@ REST_FRAMEWORK = {
 
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = True # Apenas para ambiente de desenvolvimento
+
+# Produção / InfoSec
+if not DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = False
+    # CORS_ALLOWED_ORIGINS = ['https://seusite.com']
+    
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000  # 1 ano
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    
+    # Prevenção contra roubo via XSS (Cookies invisíveis pro JavaScript)
+    CSRF_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_HTTPONLY = True
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'LexCalc Pro API',

@@ -1,0 +1,123 @@
+/* Design Tokens: LexCalc Pro */
+/* Paleta inspirada no nicho Jurídico: Azul Profundo (Confiança, Segurança) e Ouro/Champagne (Autoridade, Prestígio), otimizada para SaaS de alta conversão. */
+
+:root {
+  /* =========================================
+     LIGHT MODE (Default)
+     ========================================= */
+  
+  /* Backgrounds */
+  --color-bg-root: #F8FAFC; /* Slate 50 - Fundo muito limpo e levemente frio */
+  --color-bg-surface: #FFFFFF; /* Pure White para cards e modais */
+  --color-bg-surface-hover: #F1F5F9; /* Slate 100 */
+
+  /* Primary (Trust, Law, Justice - Deep Indigo/Navy) */
+  --color-primary: #1E3A8A; /* Blue 900 */
+  --color-primary-hover: #1D4ED8; /* Blue 700 */
+  --color-primary-light: #EFF6FF; /* Blue 50 */
+  --color-primary-text: #FFFFFF;
+
+  /* Accent (Authority, Prestige - Champagne Gold) */
+  --color-accent: #B48440;
+  --color-accent-hover: #9A6F33;
+  --color-accent-text: #FFFFFF;
+
+  /* Text */
+  --color-text-primary: #0F172A; /* Slate 900 */
+  --color-text-secondary: #475569; /* Slate 600 */
+  --color-text-tertiary: #94A3B8; /* Slate 400 */
+
+  /* Borders & Dividers */
+  --color-border: #E2E8F0; /* Slate 200 */
+  --color-border-focus: #3B82F6; /* Blue 500 */
+
+  /* Status (Feedback visual vibrante) */
+  --color-success: #10B981;
+  --color-success-bg: #ECFDF5;
+  --color-error: #EF4444;
+  --color-error-bg: #FEF2F2;
+  --color-warning: #F59E0B;
+  --color-warning-bg: #FFFBEB;
+  --color-info: #0EA5E9;
+  --color-info-bg: #F0F9FF;
+
+  /* =========================================
+     TYPOGRAPHY & SPACING
+     ========================================= */
+  
+  /* Font Family (Clean, modern, legible) */
+  --font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+
+  /* Font Sizes */
+  --font-xs: 0.75rem;    /* 12px */
+  --font-sm: 0.875rem;   /* 14px */
+  --font-base: 1rem;     /* 16px */
+  --font-lg: 1.125rem;   /* 18px */
+  --font-xl: 1.25rem;    /* 20px */
+  --font-2xl: 1.5rem;    /* 24px */
+  --font-3xl: 1.875rem;  /* 30px */
+
+  /* Spacing */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Radius (Smooth curves for modern SaaS) */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem;   /* 8px */
+  --radius-lg: 0.75rem;  /* 12px */
+  --radius-xl: 1rem;     /* 16px */
+  --radius-full: 9999px;
+
+  /* Elevations (Shadows - Glassmorphism ready) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Animations */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   DARK MODE
+   ========================================= */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-bg-root: #020617; /* Slate 950 - Extremely deep, sexy dark mode */
+  --color-bg-surface: #0F172A; /* Slate 900 */
+  --color-bg-surface-hover: #1E293B; /* Slate 800 */
+
+  /* Primary */
+  --color-primary: #3B82F6; /* Lighter blue for dark mode visibility */
+  --color-primary-hover: #60A5FA;
+  --color-primary-light: #1E3A8A; /* Dimmed background for alerts */
+  
+  /* Accent */
+  --color-accent: #D9A05B; /* Brighter gold */
+  --color-accent-hover: #F3C384;
+
+  /* Text */
+  --color-text-primary: #F8FAFC; /* Slate 50 */
+  --color-text-secondary: #94A3B8; /* Slate 400 */
+  --color-text-tertiary: #475569; /* Slate 600 */
+
+  /* Borders & Dividers */
+  --color-border: #1E293B; /* Slate 800 */
+  --color-border-focus: #60A5FA;
+
+  /* Status */
+  --color-success-bg: rgba(16, 185, 129, 0.1);
+  --color-error-bg: rgba(239, 68, 68, 0.1);
+  --color-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-info-bg: rgba(14, 165, 233, 0.1);
+
+  /* Elevation Overrides for Dark Mode */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
