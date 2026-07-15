@@ -13,9 +13,7 @@ const registerSchema = z.object({
   email: z.string().email('Email inválido'),
   company: z.string().min(2, 'O nome do escritório/empresa é obrigatório'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
-  acceptLgpd: z.literal(true, {
-    errorMap: () => ({ message: 'Você deve aceitar os termos da LGPD' }),
-  }),
+  acceptLgpd: z.boolean().refine(val => val === true, "Você deve aceitar os termos"),
 });
 
 type RegisterFormInputs = z.infer<typeof registerSchema>;
@@ -32,7 +30,7 @@ export const Register: React.FC = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data: RegisterFormInputs) => {
+  const onSubmit = async () => {
     try {
       setServerError('');
       // Simulate API call

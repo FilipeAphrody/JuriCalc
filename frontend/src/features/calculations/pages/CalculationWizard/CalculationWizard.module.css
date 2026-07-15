@@ -1,0 +1,200 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+}
+
+.wizardCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  min-height: 60vh;
+}
+
+.stepperWrapper {
+  padding: var(--space-6) var(--space-10);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-root);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.stepContent {
+  flex: 1;
+  padding: var(--space-8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.typeSelection {
+  display: flex;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .typeSelection {
+    flex-direction: column;
+  }
+}
+
+.typeCard {
+  flex: 1;
+  background-color: var(--color-bg-root);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.typeCard:hover {
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.typeCardSelected {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .typeCardSelected {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.typeIconWrapper {
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+  background-color: var(--color-bg-surface);
+  padding: var(--space-4);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+.typeCardSelected .typeIconWrapper {
+  background-color: var(--color-primary);
+  color: var(--color-bg-surface);
+}
+
+.typeCard h3 {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary);
+}
+
+.typeCard p {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (max-width: 600px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resultView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.successBadge {
+  color: var(--color-success);
+  margin-bottom: var(--space-4);
+}
+
+.resultView h2 {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-6);
+}
+
+.resultSummary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background-color: var(--color-bg-root);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.resultRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: var(--space-2);
+}
+
+.resultRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.resultRow strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.resultTotal {
+  margin-top: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--color-border);
+  font-size: var(--font-lg);
+}
+
+.resultTotal strong {
+  color: var(--color-success);
+  font-size: var(--font-xl);
+}
+
+.footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--color-bg-root);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}

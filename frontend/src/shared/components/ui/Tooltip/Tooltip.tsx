@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styles from './Tooltip.module.css';
 
 export interface TooltipProps {
@@ -15,16 +15,17 @@ export const Tooltip: React.FC<TooltipProps> = ({
   delay = 200,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const showTooltip = () => {
     const id = setTimeout(() => setIsVisible(true), delay);
-    setTimeoutId(id);
+    timeoutRef.current = id;
   };
 
   const hideTooltip = () => {
-    if (timeoutId) clearTimeout(timeoutId);
-    setIsVisible(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }setIsVisible(false);
   };
 
   return (

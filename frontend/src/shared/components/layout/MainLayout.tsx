@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Sidebar } from '../Sidebar/Sidebar';
-import { Header } from '../Header/Header';
+import { Sidebar } from './Sidebar/Sidebar';
+import { Header } from './Header/Header';
 import styles from './MainLayout.module.css';
 
 interface MainLayoutProps {

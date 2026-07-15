@@ -16,6 +16,22 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Micro-animations and Global Transitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 body {
   font-family: var(--font-family-base);
   background-color: var(--color-bg-root);

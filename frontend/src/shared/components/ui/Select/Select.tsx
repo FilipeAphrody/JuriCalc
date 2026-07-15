@@ -1,4 +1,4 @@
-import React, { SelectHTMLAttributes, forwardRef, useId } from 'react';
+import { forwardRef, type SelectHTMLAttributes, useId } from 'react';
 import styles from './Select.module.css';
 
 export interface SelectOption {

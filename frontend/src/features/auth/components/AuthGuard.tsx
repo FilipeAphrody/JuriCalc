@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../../app/store/authStore';
-import { jwtDecode } from 'jwt-decode';
 
 interface AuthGuardProps {
-  children: JSX.Element;
+  children: React.ReactNode;
   requireAdmin?: boolean;
 }
 

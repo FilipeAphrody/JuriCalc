@@ -1,0 +1,60 @@
+.dropzone {
+  width: 100%;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-surface);
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropzone:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.dropzone.active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  transform: scale(1.01);
+}
+
+.fileInput {
+  display: none;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: var(--space-10) var(--space-6);
+  cursor: pointer;
+  text-align: center;
+}
+
+.iconWrapper {
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
+  background-color: var(--color-bg-root);
+  padding: var(--space-4);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+.mainText {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.subText {
+  font-size: var(--font-sm);
+  color: var(--color-text-tertiary);
+}

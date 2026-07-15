@@ -49,3 +49,39 @@ O projeto é dividido em domínios específicos para garantir manutenibilidade:
 - **Gestão de Documentos (`documents`)**: Upload e versionamento de arquivos vinculados a processos ou clientes.
 - **Motores de Cálculo (`engines.*`)**: Regras de negócio isoladas (Cível, Trabalhista, Tributário, Bancário, Família, Previdenciário).
 - **Isolamento de Dados (`core.filters`)**: Todas as rotas de gestão são protegidas pelo `TenantFilterBackend`, que exige o cabeçalho `X-Office-ID` para evitar vazamento de dados.
+
+## Frontend (React + Vite)
+
+O front-end foi construído seguindo os padrões do FSA (Feature-Sliced Architecture), oferecendo uma experiência premium (UX/UI):
+- **React 19** + **Vite**
+- **TypeScript** rigoroso para type-safety de ponta a ponta.
+- **Zustand** para gerenciamento de estado global da autenticação.
+- **React Hook Form** + **Zod** para validação robusta de formulários.
+- **Axios** com interceptadores automáticos de JWT e `X-Office-ID`.
+- **CSS Modules** para estilos locais de altíssimo padrão, design *Glassmorphism* e Dark Mode.
+
+### Executando o Frontend
+1. Acesse o diretório do front-end:
+```bash
+cd frontend
+```
+2. Instale as dependências:
+```bash
+npm install
+```
+3. Rode o servidor de desenvolvimento:
+```bash
+npm run dev
+```
+
+## Quality Assurance & Testes E2E (MSW)
+
+O projeto possui altíssima cobertura de código e isolamento para garantia de qualidade.
+- No **Back-end**, utilizamos `pytest` e `django-pytest` testando Rate Limiting, Roles (RBAC) e Engine de Cálculos exatos.
+- No **Front-end**, utilizamos **Vitest** + **React Testing Library** + **JSDOM**. 
+- A rede do Front-end é completamente interceptada pelo **Mock Service Worker (MSW)**, garantindo E2E limpo, mockando *Unhappy Paths* (ex: HTTP 401 Unauthorized, HTTP 504 Gateway Timeout) e validando o comportamento de resiliência da interface gráfica sem tocar no servidor real. 
+
+Para rodar os testes do Frontend com relatório de cobertura (Coverage):
+```bash
+npm run coverage
+```

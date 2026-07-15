@@ -1,0 +1,207 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.backBtn {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.backBtn:hover {
+  background-color: var(--color-bg-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.title {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.summaryCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 1024px) {
+  .summaryCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .summaryCards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  box-shadow: var(--shadow-sm);
+}
+
+.summaryCardHighlight {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+}
+
+.summaryCardHighlight .summaryLabel {
+  color: var(--color-success);
+}
+
+.summaryCardHighlight .summaryValue {
+  color: var(--color-success);
+}
+
+.summaryLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.tableCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tableHeader {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tableHeader h3 {
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.tableMeta {
+  font-size: var(--font-sm);
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+  background-color: var(--color-bg-root);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+}
+
+.table th, .table td {
+  padding: var(--space-4) var(--space-6);
+}
+
+.table th {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--color-bg-root);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th:first-child, .table td:first-child {
+  text-align: left;
+}
+
+.table td {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.monoCell {
+  font-family: monospace;
+  color: var(--color-text-tertiary) !important;
+}
+
+.highlightCol {
+  font-weight: 600;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .highlightCol {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.table tr:hover td {
+  background-color: var(--color-bg-surface-hover);
+}
+
+.table tfoot td {
+  padding: var(--space-5) var(--space-6);
+  background-color: var(--color-bg-root);
+  font-weight: 700;
+  font-size: var(--font-md);
+  border-top: 2px solid var(--color-border);
+}
+
+.footerLabel {
+  text-align: right;
+  color: var(--color-text-secondary) !important;
+}
+
+.footerValue {
+  color: var(--color-primary) !important;
+}
