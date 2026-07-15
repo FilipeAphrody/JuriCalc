@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.label {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.textareaWrapper {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg-surface);
+  transition: all var(--transition-fast);
+}
+
+.textareaWrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.textareaWrapper.hasError {
+  border-color: var(--color-error);
+}
+
+.textareaWrapper.hasError:focus-within {
+  box-shadow: 0 0 0 3px var(--color-error-bg);
+}
+
+.textareaWrapper.isDisabled {
+  background-color: var(--color-bg-surface-hover);
+  opacity: 0.7;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 80px;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  resize: vertical;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.textarea:disabled {
+  cursor: not-allowed;
+}
+
+.hint {
+  font-size: var(--font-xs);
+  margin-top: 2px;
+}
+
+.helperText { color: var(--color-text-secondary); }
+.errorText { color: var(--color-error); font-weight: 500; }

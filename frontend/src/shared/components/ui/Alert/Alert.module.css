@@ -1,0 +1,75 @@
+.alert {
+  display: flex;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 4px solid;
+  position: relative;
+  animation: slideIn 200ms ease-out;
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  margin-right: var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.content {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.body {
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  margin-left: var(--space-3);
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+.closeButton:hover {
+  opacity: 1;
+}
+
+/* Tipos */
+.info {
+  background-color: var(--color-info-bg);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+
+.success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+.warning .body, .warning .title { color: #92400E; } /* Dark amber for readability */
+[data-theme="dark"] .warning .body, [data-theme="dark"] .warning .title { color: #FCD34D; }
+
+.error {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

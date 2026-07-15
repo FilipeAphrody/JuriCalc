@@ -1,0 +1,89 @@
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: var(--color-text-primary);
+  color: var(--color-bg-surface);
+  font-family: var(--font-family-base);
+  font-size: var(--font-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  z-index: 50;
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 150ms ease-in-out;
+  pointer-events: none;
+}
+
+/* Posições */
+.top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(-1 * var(--space-2)));
+}
+
+.bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(var(--space-2));
+}
+
+.left {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(calc(-1 * var(--space-2)));
+}
+
+.right {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(var(--space-2));
+}
+
+/* Setinhas (Triângulos) */
+.arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.arrow-top {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px 4px 0 4px;
+  border-color: var(--color-text-primary) transparent transparent transparent;
+}
+
+.arrow-bottom {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 4px 4px 4px;
+  border-color: transparent transparent var(--color-text-primary) transparent;
+}
+
+.arrow-left {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 4px 0 4px 4px;
+  border-color: transparent transparent transparent var(--color-text-primary);
+}
+
+.arrow-right {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 4px 4px 4px 0;
+  border-color: transparent var(--color-text-primary) transparent transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
