@@ -51,7 +51,7 @@ export const Login: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.leftPanel}>
         <div className={styles.brand}>
-          <h1>LexCalc <span>Pro</span></h1>
+          <h1>VadeMath</h1>
           <p>O SaaS Jurídico Definitivo</p>
         </div>
       </div>

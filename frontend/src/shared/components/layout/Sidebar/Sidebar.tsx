@@ -32,7 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       <div className={styles.header}>
         <div className={styles.brand}>
           <Scale className={styles.brandIcon} size={28} />
-          {!isCollapsed && <h2>LexCalc <span>Pro</span></h2>}
+          {!isCollapsed && <h2>VadeMath</h2>}
         </div>
         <button onClick={onToggle} className={styles.toggleButton} aria-label="Toggle Sidebar">
           {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}

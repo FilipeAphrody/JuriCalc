@@ -11,7 +11,7 @@ export const LandingPage: React.FC = () => {
       <nav className={styles.navbar}>
         <div className={styles.brand}>
           <Scale className={styles.brandIcon} size={28} />
-          <span>LexCalc <strong>Pro</strong></span>
+          <span><strong>VadeMath</strong></span>
         </div>
         <div className={styles.navLinks}>
           <a href="#features">Recursos</a>
@@ -111,9 +111,9 @@ export const LandingPage: React.FC = () => {
         <div className={styles.footerContent}>
           <div className={styles.brand}>
             <Scale size={24} className={styles.brandIcon} />
-            <span>LexCalc <strong>Pro</strong></span>
+            <span><strong>VadeMath</strong></span>
           </div>
-          <p>© 2026 LexCalc Pro. Todos os direitos reservados.</p>
+          <p>© 2026 VadeMath. Todos os direitos reservados.</p>
           <div className={styles.legalLinks}>
             <a href="#">Termos de Uso</a>
             <a href="#">Política de Privacidade (LGPD)</a>

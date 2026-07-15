@@ -1,4 +1,4 @@
-# LexCalc Pro
+# VadeMath
 
 Plataforma SaaS Multi-Tenant para cálculos judiciais abrangendo as áreas: Trabalhista, Previdenciária, Tributária, Cível, Família e Bancária. Construído com Django e Django REST Framework.
 

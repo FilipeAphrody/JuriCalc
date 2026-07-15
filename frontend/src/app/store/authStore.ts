@@ -18,14 +18,14 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  token: localStorage.getItem('lexcalc_token'),
-  isAuthenticated: !!localStorage.getItem('lexcalc_token'),
+  token: localStorage.getItem('vademath_token'),
+  isAuthenticated: !!localStorage.getItem('vademath_token'),
   login: (user, token) => {
-    localStorage.setItem('lexcalc_token', token);
+    localStorage.setItem('vademath_token', token);
     set({ user, token, isAuthenticated: true });
   },
   logout: () => {
-    localStorage.removeItem('lexcalc_token');
+    localStorage.removeItem('vademath_token');
     set({ user: null, token: null, isAuthenticated: false });
   },
 }));
