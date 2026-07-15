@@ -1,16 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { Login } from '../../features/auth/pages/Login/Login';
+import { Register } from '../../features/auth/pages/Register/Register';
+import { AuthGuard } from '../../features/auth/components/AuthGuard';
+import { MainLayout } from '../../shared/components/layout/MainLayout';
 
 // Temporary dummy components for routing setup
-const Dashboard = () => <div>Dashboard Protegida</div>;
-const Login = () => <div>Tela de Login</div>;
-
-// Guard para rotas protegidas
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return children;
-};
+const Dashboard = () => <div><h2>Dashboard Protegida</h2><p>Conteúdo da Dashboard será aqui.</p></div>;
 
 export const router = createBrowserRouter([
   {
@@ -18,11 +13,17 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: '/register',
+    element: <Register />,
+  },
+  {
     path: '/dashboard',
     element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
+      <AuthGuard>
+        <MainLayout>
+          <Dashboard />
+        </MainLayout>
+      </AuthGuard>
     ),
   },
   {

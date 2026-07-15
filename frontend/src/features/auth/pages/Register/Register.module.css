@@ -1,0 +1,92 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-root);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--color-bg-surface);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.header {
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.header h2 {
+  font-size: var(--font-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+}
+
+.errorAlert {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-sm);
+  text-align: center;
+  border: 1px solid var(--color-error);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.checkboxWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.checkbox {
+  margin-top: 2px;
+  accent-color: var(--color-primary);
+}
+
+.errorText {
+  color: var(--color-error);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.submitButton {
+  margin-top: var(--space-4);
+}
+
+.footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.loginLink {
+  font-weight: 600;
+  color: var(--color-primary);
+}

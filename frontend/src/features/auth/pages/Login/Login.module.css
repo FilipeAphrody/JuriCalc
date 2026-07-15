@@ -1,0 +1,115 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-root);
+}
+
+.leftPanel {
+  display: none;
+  flex: 1;
+  background-color: var(--color-primary);
+  background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  color: var(--color-primary-text);
+  padding: var(--space-12);
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .leftPanel {
+    display: flex;
+  }
+}
+
+.brand h1 {
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.brand h1 span {
+  color: var(--color-accent);
+}
+
+.brand p {
+  font-size: var(--font-lg);
+  opacity: 0.8;
+}
+
+.rightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-bg-surface);
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.header {
+  margin-bottom: var(--space-8);
+  text-align: center;
+}
+
+.header h2 {
+  font-size: var(--font-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-sm);
+}
+
+.errorAlert {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-sm);
+  text-align: center;
+  border: 1px solid var(--color-error);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.forgotPassword {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.submitButton {
+  margin-top: var(--space-2);
+}
+
+.footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.registerLink {
+  font-weight: 600;
+}

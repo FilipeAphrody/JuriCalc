@@ -5,6 +5,7 @@ interface User {
   username: string;
   email: string;
   officeId?: number;
+  role?: string;
 }
 
 interface AuthState {
