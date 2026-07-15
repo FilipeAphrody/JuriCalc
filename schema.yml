@@ -1,0 +1,1370 @@
+openapi: 3.0.3
+info:
+  title: LexCalc Pro API
+  version: 1.0.0
+  description: API para cálculos judiciais
+paths:
+  /api/v1/auth/token/:
+    post:
+      operationId: v1_auth_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: v1_auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/banking/amortization/:
+    post:
+      operationId: v1_banking_amortization_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BankingAmortization'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BankingAmortization'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BankingAmortization'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankingAmortization'
+          description: ''
+  /api/v1/civil/calculate/:
+    post:
+      operationId: v1_civil_calculate_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CivilCalculation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CivilCalculation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CivilCalculation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CivilCalculation'
+          description: ''
+  /api/v1/clients/:
+    get:
+      operationId: v1_clients_list
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - PF
+          - PJ
+        description: |-
+          * `PF` - Pessoa Física
+          * `PJ` - Pessoa Jurídica
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClientList'
+          description: ''
+    post:
+      operationId: v1_clients_create
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Client'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+  /api/v1/clients/{id}/:
+    get:
+      operationId: v1_clients_retrieve
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cliente.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    put:
+      operationId: v1_clients_update
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cliente.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Client'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    patch:
+      operationId: v1_clients_partial_update
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cliente.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    delete:
+      operationId: v1_clients_destroy
+      description: |-
+        CRUD completo para Clientes.
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cliente.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/documents/:
+    get:
+      operationId: v1_documents_list
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      parameters:
+      - in: query
+        name: client_id
+        schema:
+          type: integer
+      - in: query
+        name: lawsuit_id
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDocumentList'
+          description: ''
+    post:
+      operationId: v1_documents_create
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Document'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Document'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+  /api/v1/documents/{id}/:
+    get:
+      operationId: v1_documents_retrieve
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Documento.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+    put:
+      operationId: v1_documents_update
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Documento.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Document'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Document'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+    patch:
+      operationId: v1_documents_partial_update
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Documento.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocument'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocument'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocument'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: ''
+    delete:
+      operationId: v1_documents_destroy
+      description: |-
+        CRUD completo para Documentos com suporte a Upload de Arquivos.
+        Protegido pelo TenantFilterBackend.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Documento.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/family/alimony/:
+    post:
+      operationId: v1_family_alimony_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlimonyArrears'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AlimonyArrears'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AlimonyArrears'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlimonyArrears'
+          description: ''
+  /api/v1/labor/overtime/:
+    post:
+      operationId: v1_labor_overtime_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OvertimeCalculation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OvertimeCalculation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OvertimeCalculation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OvertimeCalculation'
+          description: ''
+  /api/v1/lawsuits/:
+    get:
+      operationId: v1_lawsuits_list
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: query
+        name: client_id
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - ARCHIVED
+          - SUSPENDED
+        description: |-
+          * `ACTIVE` - Ativo
+          * `ARCHIVED` - Arquivado
+          * `SUSPENDED` - Suspenso
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLawsuitList'
+          description: ''
+    post:
+      operationId: v1_lawsuits_create
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lawsuit'
+          description: ''
+  /api/v1/lawsuits/{id}/:
+    get:
+      operationId: v1_lawsuits_retrieve
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Processo.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lawsuit'
+          description: ''
+    put:
+      operationId: v1_lawsuits_update
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Processo.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Lawsuit'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lawsuit'
+          description: ''
+    patch:
+      operationId: v1_lawsuits_partial_update
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Processo.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLawsuit'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLawsuit'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLawsuit'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lawsuit'
+          description: ''
+    delete:
+      operationId: v1_lawsuits_destroy
+      description: |-
+        CRUD completo para Processos Judiciais (Lawsuits).
+        Protegido pelo TenantFilterBackend (isolamento de dados).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Processo.
+        required: true
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/pension/delayed/:
+    post:
+      operationId: v1_pension_delayed_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PensionDelayed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PensionDelayed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PensionDelayed'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PensionDelayed'
+          description: ''
+  /api/v1/tax/calculate/:
+    post:
+      operationId: v1_tax_calculate_create
+      description: |-
+        Classe base que intercepta requisições de cálculos,
+        chama o Service matemático e salva os resultados imutáveis (CalculationVersion).
+      parameters:
+      - in: header
+        name: X-Office-ID
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxCalculation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaxCalculation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaxCalculation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCalculation'
+          description: ''
+components:
+  schemas:
+    AlimonyArrears:
+      type: object
+      properties:
+        monthly_alimony:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        index_name:
+          type: string
+          default: INPC
+          maxLength: 50
+        interest_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.0100'
+        fine_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.1000'
+      required:
+      - end_date
+      - monthly_alimony
+      - start_date
+    BankingAmortization:
+      type: object
+      properties:
+        principal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          description: 'Taxa ao mês em decimal (ex: 0.01)'
+        periods:
+          type: integer
+          minimum: 1
+        system:
+          allOf:
+          - $ref: '#/components/schemas/SystemEnum'
+          default: PRICE
+      required:
+      - periods
+      - principal
+      - rate
+    CivilCalculation:
+      type: object
+      properties:
+        principal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        index_name:
+          type: string
+          maxLength: 50
+        interest_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+        interest_type:
+          allOf:
+          - $ref: '#/components/schemas/InterestTypeEnum'
+          default: simple
+        fine_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.0000'
+        fees_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.0000'
+        claim_type:
+          allOf:
+          - $ref: '#/components/schemas/ClaimTypeEnum'
+          default: debt
+      required:
+      - end_date
+      - index_name
+      - interest_rate
+      - principal
+      - start_date
+    ClaimTypeEnum:
+      enum:
+      - debt
+      - execution
+      - rent
+      - condo
+      type: string
+      description: |-
+        * `debt` - debt
+        * `execution` - execution
+        * `rent` - rent
+        * `condo` - condo
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        name:
+          type: string
+          maxLength: 255
+        document_number:
+          type: string
+          description: CPF ou CNPJ
+          maxLength: 20
+        contact_info:
+          description: Email, Telefone, Endereço, etc.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+      required:
+      - created_at
+      - document_number
+      - id
+      - name
+      - office
+      - updated_at
+    Document:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          description: Arquivo físico
+        filename:
+          type: string
+          description: Nome original do arquivo
+          maxLength: 255
+        tags:
+          description: 'Ex: [''Contrato'', ''Procuração'']'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+          nullable: true
+        lawsuit:
+          type: integer
+          nullable: true
+        uploaded_by:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - file
+      - filename
+      - id
+      - office
+      - updated_at
+      - uploaded_by
+    InterestTypeEnum:
+      enum:
+      - simple
+      - compound
+      type: string
+      description: |-
+        * `simple` - simple
+        * `compound` - compound
+    Lawsuit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cnj_number:
+          type: string
+          description: Número unificado do CNJ
+          maxLength: 50
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        metadata:
+          description: Informações adicionais do processo
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+      required:
+      - client
+      - cnj_number
+      - created_at
+      - id
+      - office
+      - updated_at
+    OvertimeCalculation:
+      type: object
+      properties:
+        base_salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        overtime_hours:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        overtime_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.5000'
+        work_hours_monthly:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          default: '220.00'
+        work_days_month:
+          type: integer
+          default: 25
+        rest_days_month:
+          type: integer
+          default: 5
+      required:
+      - base_salary
+      - overtime_hours
+    PaginatedClientList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    PaginatedDocumentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+    PaginatedLawsuitList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lawsuit'
+    PatchedClient:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        name:
+          type: string
+          maxLength: 255
+        document_number:
+          type: string
+          description: CPF ou CNPJ
+          maxLength: 20
+        contact_info:
+          description: Email, Telefone, Endereço, etc.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+    PatchedDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          description: Arquivo físico
+        filename:
+          type: string
+          description: Nome original do arquivo
+          maxLength: 255
+        tags:
+          description: 'Ex: [''Contrato'', ''Procuração'']'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+          nullable: true
+        lawsuit:
+          type: integer
+          nullable: true
+        uploaded_by:
+          type: integer
+          readOnly: true
+          nullable: true
+    PatchedLawsuit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cnj_number:
+          type: string
+          description: Número unificado do CNJ
+          maxLength: 50
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        metadata:
+          description: Informações adicionais do processo
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        office:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+    PensionDelayed:
+      type: object
+      properties:
+        monthly_benefit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        index_name:
+          type: string
+          default: INPC
+          maxLength: 50
+        interest_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.0050'
+      required:
+      - end_date
+      - monthly_benefit
+      - start_date
+    StatusEnum:
+      enum:
+      - ACTIVE
+      - ARCHIVED
+      - SUSPENDED
+      type: string
+      description: |-
+        * `ACTIVE` - Ativo
+        * `ARCHIVED` - Arquivado
+        * `SUSPENDED` - Suspenso
+    SystemEnum:
+      enum:
+      - PRICE
+      - SAC
+      - SACRE
+      type: string
+      description: |-
+        * `PRICE` - PRICE
+        * `SAC` - SAC
+        * `SACRE` - SACRE
+    TaxCalculation:
+      type: object
+      properties:
+        principal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        fine_percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          default: '0.0000'
+      required:
+      - end_date
+      - principal
+      - start_date
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TypeEnum:
+      enum:
+      - PF
+      - PJ
+      type: string
+      description: |-
+        * `PF` - Pessoa Física
+        * `PJ` - Pessoa Jurídica
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

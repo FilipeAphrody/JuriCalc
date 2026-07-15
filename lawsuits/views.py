@@ -1,5 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Lawsuit
 from .serializers import LawsuitSerializer
 from core.filters import TenantFilterBackend
@@ -14,7 +15,10 @@ class LawsuitViewSet(viewsets.ModelViewSet):
     """
     serializer_class = LawsuitSerializer
     permission_classes = [IsAuthenticated, IsTenantLawyerOrAbove]
-    filter_backends = [TenantFilterBackend]
+    filter_backends = [TenantFilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'client_id']
+    search_fields = ['cnj_number', 'client__name']
+    ordering_fields = ['created_at']
     
     @extend_schema(
         parameters=[

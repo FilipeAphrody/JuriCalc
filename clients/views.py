@@ -1,5 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Client
 from .serializers import ClientSerializer
 from core.filters import TenantFilterBackend
@@ -14,7 +15,10 @@ class ClientViewSet(viewsets.ModelViewSet):
     """
     serializer_class = ClientSerializer
     permission_classes = [IsAuthenticated, IsTenantLawyerOrAbove]
-    filter_backends = [TenantFilterBackend]
+    filter_backends = [TenantFilterBackend, DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['type']
+    search_fields = ['name', 'document_number']
+    ordering_fields = ['name', 'created_at']
     
     @extend_schema(
         parameters=[
