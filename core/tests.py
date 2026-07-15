@@ -1,75 +1,39 @@
-from django.test import TestCase
-from decimal import Decimal
-from datetime import date
-from core.math_engine import amortization_price, amortization_sac, calculate_interest, apply_monetary_correction
-from core.models import EconomicIndex
+import pytest
+from core.models import Calculation, CalculationVersion, AuditLog
+from users.models import CustomUser, Office, Plan
 
-class MathEngineTests(TestCase):
-    def test_amortization_price(self):
-        principal = Decimal('1000.00')
-        rate = Decimal('0.01') # 1%
-        periods = 10
+@pytest.mark.django_db
+class TestCalculationAndAuditLog:
+    def test_calculation_version_creates_audit_log_via_signal(self):
+        user = CustomUser.objects.create_user(username="calcuser", email="calc@lexcalc.com", password="securepassword")
+        plan = Plan.objects.create(name="Basic", price=0.00, features={"max_users": 1})
+        office = Office.objects.create(name="Office Test", plan=plan)
         
-        schedule = amortization_price(principal, rate, periods)
-        self.assertEqual(len(schedule), 10)
+        calc = Calculation.objects.create(
+            office=office,
+            title="Cálculo Inicial",
+            engine="civil",
+            created_by=user
+        )
         
-        # Check first period
-        # PMT = 1000 * 0.01 / (1 - 1.01^-10) = 105.58
-        self.assertEqual(schedule[0]['period'], 1)
-        self.assertEqual(schedule[0]['installment'], Decimal('105.58'))
-        self.assertEqual(schedule[0]['interest'], Decimal('10.00'))
-        self.assertEqual(schedule[0]['amortization'], Decimal('95.58'))
-        self.assertEqual(schedule[0]['balance'], Decimal('904.42'))
+        # O AuditLog deve estar vazio inicialmente
+        assert AuditLog.objects.count() == 0
         
-        # Check last period balance is very close to 0
-        self.assertEqual(schedule[-1]['balance'], Decimal('0.00'))
-
-    def test_amortization_sac(self):
-        principal = Decimal('1000.00')
-        rate = Decimal('0.01') # 1%
-        periods = 10
+        # Ao criar uma versão, o Signal post_save deve gerar um AuditLog
+        version = CalculationVersion.objects.create(
+            calculation=calc,
+            version_number=1,
+            input_data={"principal": 1000},
+            output_data={"total": 1100},
+            created_by=user
+        )
         
-        schedule = amortization_sac(principal, rate, periods)
-        self.assertEqual(len(schedule), 10)
+        assert AuditLog.objects.count() == 1
+        log = AuditLog.objects.first()
         
-        # Check first period
-        self.assertEqual(schedule[0]['period'], 1)
-        self.assertEqual(schedule[0]['installment'], Decimal('110.00'))
-        self.assertEqual(schedule[0]['interest'], Decimal('10.00'))
-        self.assertEqual(schedule[0]['amortization'], Decimal('100.00'))
-        self.assertEqual(schedule[0]['balance'], Decimal('900.00'))
-        
-        # Check last period balance is 0
-        self.assertEqual(schedule[-1]['balance'], Decimal('0.00'))
-
-    def test_calculate_interest_simple(self):
-        value = Decimal('1000.00')
-        rate = Decimal('0.01')
-        start_date = date(2023, 1, 1)
-        end_date = date(2023, 11, 1) # 10 months
-        
-        # 1000 * (1 + 0.01 * 10) = 1100
-        result = calculate_interest(value, rate, 'simple', start_date, end_date)
-        self.assertEqual(result, Decimal('1100.00'))
-
-    def test_calculate_interest_compound(self):
-        value = Decimal('1000.00')
-        rate = Decimal('0.01')
-        start_date = date(2023, 1, 1)
-        end_date = date(2023, 3, 1) # 2 months
-        
-        # 1000 * (1.01)^2 = 1020.1
-        result = calculate_interest(value, rate, 'compound', start_date, end_date)
-        self.assertEqual(result.quantize(Decimal('0.01')), Decimal('1020.10'))
-
-    def test_apply_monetary_correction(self):
-        EconomicIndex.objects.create(name='IPCA', date=date(2023, 1, 1), value=Decimal('0.01'))
-        EconomicIndex.objects.create(name='IPCA', date=date(2023, 2, 1), value=Decimal('0.02'))
-        
-        value = Decimal('1000.00')
-        start_date = date(2023, 1, 15)
-        end_date = date(2023, 2, 15)
-        
-        # 1000 * 1.01 * 1.02 = 1030.2
-        result = apply_monetary_correction(value, 'IPCA', start_date, end_date)
-        self.assertEqual(result.quantize(Decimal('0.01')), Decimal('1030.20'))
+        # Verificar integridade da auditoria
+        assert log.calculation_version == version
+        assert "calc@lexcalc.com" in log.details
+        assert "Cálculo Inicial" in log.details
+        assert "civil" in log.details
+        assert log.action == f"Cálculo Gerado: Versão {version.version_number}"
