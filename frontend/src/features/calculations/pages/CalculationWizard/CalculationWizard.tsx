@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './CalculationWizard.module.css';
 import { Stepper, type Step } from '../../../../shared/components/ui/Stepper/Stepper';
 import { Button } from '../../../../shared/components/ui/Button/Button';
@@ -14,6 +15,7 @@ const STEPS: Step[] = [
 ];
 
 export const CalculationWizard: React.FC = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [calcType, setCalcType] = useState<'trabalhista' | 'civel' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,9 +59,8 @@ export const CalculationWizard: React.FC = () => {
         setIsLoading(false);
       }
     } else if (currentStep === 2) {
-      // Exportação / Salvar fake (MVP)
-      window.print();
-      alert("Cálculo salvo no seu escritório virtual com sucesso!");
+      // Exportação / Salvar fake (MVP) - Navegando para a memória
+      navigate(`/calculations/999/memory`, { state: { result } });
     } else if (currentStep < STEPS.length - 1) {
       setCurrentStep(prev => prev + 1);
     }

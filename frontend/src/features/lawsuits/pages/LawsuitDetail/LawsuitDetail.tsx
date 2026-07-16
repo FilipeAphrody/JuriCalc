@@ -1,20 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './LawsuitDetail.module.css';
 import { Button } from '../../../../shared/components/ui/Button/Button';
 import { LawsuitTimeline, type TimelineEvent } from '../../components/LawsuitTimeline/LawsuitTimeline';
 import { ArrowLeft, Scale, User, Calendar, DollarSign, Calculator } from 'lucide-react';
-
-const MOCK_EVENTS: TimelineEvent[] = [
-  { id: '1', date: '15/07/2026', title: 'Cálculo de Liquidação Gerado', description: 'O sistema processou a atualização monetária com sucesso.', type: 'success' },
-  { id: '2', date: '10/07/2026', title: 'Aviso de Prazo', description: 'Prazo para manifestação sobre laudo pericial.', type: 'warning' },
-  { id: '3', date: '01/07/2026', title: 'Sentença Anexada', description: 'Sentença de 1º grau publicada no diário oficial.', type: 'document' },
-  { id: '4', date: '15/06/2026', title: 'Processo Distribuído', description: 'Ação protocolada na 1ª Vara do Trabalho.', type: 'info' },
-];
+import { api } from '../../../../shared/api/axios';
 
 export const LawsuitDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [lawsuit, setLawsuit] = useState<any>(null);
+  const [client, setClient] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const res = await api.get(`/lawsuits/${id}/`);
+        const data = res.data;
+        setLawsuit(data);
+        
+        // Fetch client details
+        if (data.client) {
+          const clientRes = await api.get(`/clients/${data.client}/`);
+          setClient(clientRes.data);
+        }
+      } catch (err) {
+        console.error('Erro ao carregar processo', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (id) fetchData();
+  }, [id]);
+
+  if (isLoading) {
+    return <div className={styles.container}><p>Carregando processo...</p></div>;
+  }
+
+  if (!lawsuit) {
+    return <div className={styles.container}><p>Processo não encontrado.</p></div>;
+  }
+
+  const events: TimelineEvent[] = [
+    { 
+      id: '1', 
+      date: new Date(lawsuit.created_at).toLocaleDateString('pt-BR'), 
+      title: 'Processo Cadastrado', 
+      description: 'O processo foi registrado no sistema.', 
+      type: 'info' 
+    }
+  ];
 
   return (
     <div className={styles.container}>
@@ -24,12 +61,12 @@ export const LawsuitDetail: React.FC = () => {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className={styles.title}>Processo 0012345-67.2023.5.02.0001</h1>
-            <p className={styles.subtitle}>ID: {id} | Comarca de São Paulo - SP</p>
+            <h1 className={styles.title}>Processo {lawsuit.cnj_number}</h1>
+            <p className={styles.subtitle}>ID: {id} | {lawsuit.status}</p>
           </div>
         </div>
         <div className={styles.actions}>
-          <Button variant="primary" leftIcon={<Calculator size={18} />}>Novo Cálculo</Button>
+          <Button variant="primary" leftIcon={<Calculator size={18} />} onClick={() => navigate('/wizard')}>Novo Cálculo</Button>
         </div>
       </header>
 
@@ -41,29 +78,29 @@ export const LawsuitDetail: React.FC = () => {
               <div className={styles.detailItem}>
                 <User size={16} className={styles.detailIcon} />
                 <div className={styles.detailContent}>
-                  <span className={styles.label}>Cliente (Reclamante)</span>
-                  <span className={styles.value}>João da Silva</span>
+                  <span className={styles.label}>Cliente</span>
+                  <span className={styles.value}>{client ? client.name : `ID: ${lawsuit.client}`}</span>
                 </div>
               </div>
               <div className={styles.detailItem}>
                 <Scale size={16} className={styles.detailIcon} />
                 <div className={styles.detailContent}>
                   <span className={styles.label}>Classe Judicial</span>
-                  <span className={styles.value}>Reclamação Trabalhista</span>
+                  <span className={styles.value}>{lawsuit.metadata?.action_type || 'N/A'}</span>
                 </div>
               </div>
               <div className={styles.detailItem}>
                 <Calendar size={16} className={styles.detailIcon} />
                 <div className={styles.detailContent}>
-                  <span className={styles.label}>Data de Distribuição</span>
-                  <span className={styles.value}>15/06/2023</span>
+                  <span className={styles.label}>Criado em</span>
+                  <span className={styles.value}>{new Date(lawsuit.created_at).toLocaleDateString('pt-BR')}</span>
                 </div>
               </div>
               <div className={styles.detailItem}>
                 <DollarSign size={16} className={styles.detailIcon} />
                 <div className={styles.detailContent}>
                   <span className={styles.label}>Valor da Causa</span>
-                  <span className={styles.value}>R$ 45.000,00</span>
+                  <span className={styles.value}>{lawsuit.metadata?.value ? `R$ ${lawsuit.metadata.value}` : 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -81,7 +118,7 @@ export const LawsuitDetail: React.FC = () => {
         <div className={styles.rightCol}>
           <div className={styles.card}>
             <h3>Timeline (Histórico)</h3>
-            <LawsuitTimeline events={MOCK_EVENTS} />
+            <LawsuitTimeline events={events} />
           </div>
         </div>
       </div>

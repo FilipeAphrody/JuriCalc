@@ -1,24 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ClientList.module.css';
 import { Button } from '../../../../shared/components/ui/Button/Button';
 import { Input } from '../../../../shared/components/ui/Input/Input';
 import { Dropdown } from '../../../../shared/components/ui/Dropdown/Dropdown';
 import { ClientFormModal } from '../../components/ClientFormModal/ClientFormModal';
 import { Search, Plus, MoreVertical, Edit2, Trash2, Eye } from 'lucide-react';
+import { api } from '../../../../shared/api/axios';
 
-const MOCK_CLIENTS = [
-  { id: 1, name: 'João da Silva', document: '123.456.789-00', type: 'Física', processes: 2 },
-  { id: 2, name: 'Empresa Tech Ltda', document: '00.111.222/0001-33', type: 'Jurídica', processes: 5 },
-  { id: 3, name: 'Maria de Souza', document: '987.654.321-11', type: 'Física', processes: 1 },
-];
+interface Client {
+  id: number;
+  name: string;
+  document_number: string;
+  client_type: 'individual' | 'corporate';
+}
 
 export const ClientList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [clients, setClients] = useState<Client[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredClients = MOCK_CLIENTS.filter(c => 
+  const fetchClients = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.get('/clients/');
+      // Django rest framework returns { count, next, previous, results: [] } if paginated
+      const data = response.data.results ? response.data.results : response.data;
+      setClients(data);
+    } catch (err) {
+      console.error('Erro ao buscar clientes', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const filteredClients = clients.filter(c => 
     c.name.toLowerCase().includes(search.toLowerCase()) || 
-    c.document.includes(search)
+    c.document_number.includes(search)
   );
 
   return (
@@ -56,22 +78,24 @@ export const ClientList: React.FC = () => {
                 <th>Nome / Razão Social</th>
                 <th>Documento</th>
                 <th>Tipo</th>
-                <th>Qtd. Processos</th>
                 <th className={styles.actionsCol}>Ações</th>
               </tr>
             </thead>
             <tbody>
-              {filteredClients.length > 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className={styles.emptyState}>Carregando clientes...</td>
+                </tr>
+              ) : filteredClients.length > 0 ? (
                 filteredClients.map(client => (
                   <tr key={client.id}>
                     <td className={styles.boldCell}>{client.name}</td>
-                    <td>{client.document}</td>
+                    <td>{client.document_number}</td>
                     <td>
-                      <span className={`${styles.badge} ${client.type === 'Física' ? styles.badgeFisica : styles.badgeJuridica}`}>
-                        {client.type}
+                      <span className={`${styles.badge} ${client.client_type === 'individual' ? styles.badgeFisica : styles.badgeJuridica}`}>
+                        {client.client_type === 'individual' ? 'Física' : 'Jurídica'}
                       </span>
                     </td>
-                    <td>{client.processes}</td>
                     <td className={styles.actionsCol}>
                       <Dropdown 
                         align="right"
@@ -87,7 +111,7 @@ export const ClientList: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className={styles.emptyState}>
+                  <td colSpan={4} className={styles.emptyState}>
                     Nenhum cliente encontrado.
                   </td>
                 </tr>
@@ -97,7 +121,7 @@ export const ClientList: React.FC = () => {
         </div>
 
         <div className={styles.pagination}>
-          <span className={styles.pageInfo}>Mostrando {filteredClients.length} de {MOCK_CLIENTS.length} resultados</span>
+          <span className={styles.pageInfo}>Mostrando {filteredClients.length} de {clients.length} resultados</span>
           <div className={styles.pageControls}>
             <Button variant="outline" size="sm" disabled>Anterior</Button>
             <Button variant="outline" size="sm" disabled>Próxima</Button>
@@ -107,7 +131,10 @@ export const ClientList: React.FC = () => {
 
       <ClientFormModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => {
+          setIsModalOpen(false);
+          fetchClients(); // Atualiza a lista apos fechar o modal
+        }} 
       />
     </div>
   );

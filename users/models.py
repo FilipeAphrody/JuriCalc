@@ -29,7 +29,7 @@ class Plan(models.Model):
 
 class Office(models.Model):
     name = models.CharField(max_length=200)
-    cnpj = models.CharField(max_length=20, unique=True, help_text="CNPJ do Escritório")
+    cnpj = models.CharField(max_length=20, unique=True, null=True, blank=True, help_text="CNPJ do Escritório")
     plan = models.ForeignKey(Plan, on_delete=models.RESTRICT, related_name='offices')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

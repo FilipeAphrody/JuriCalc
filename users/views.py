@@ -35,13 +35,19 @@ class PasswordResetRequestView(APIView):
                 token = default_token_generator.make_token(user)
                 uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                 
-                # Mock: Imprime no console (Render Logs) ao invés de enviar por SMTP
-                reset_link = f"https://vademath.vercel.app/reset-password?token={token}&uid={uidb64}"
-                print("="*50)
-                print("EMAIL DE RECUPERAÇÃO DE SENHA (MOCK)")
-                print(f"Para: {email}")
-                print(f"Link de Recuperação: {reset_link}")
-                print("="*50)
+                # Mock: Como nao temos SMTP, vamos salvar o link em um arquivo de texto para o usuario
+                reset_link = f"http://localhost:5173/reset-password?token={token}&uid={uidb64}"
+                try:
+                    import os
+                    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'LINK_RECUPERACAO.txt')
+                    with open(file_path, 'w') as f:
+                        f.write("="*50 + "\n")
+                        f.write("MENSAGEM DE RECUPERACAO DE SENHA SIMULADA\n")
+                        f.write(f"Para: {email}\n")
+                        f.write(f"Clique neste link para recuperar sua senha: {reset_link}\n")
+                        f.write("="*50 + "\n")
+                except Exception as e:
+                    print("Erro ao salvar arquivo de mock de email", e)
             
             # Retorna 200 sempre, para evitar user enumeration (segurança)
             return Response(

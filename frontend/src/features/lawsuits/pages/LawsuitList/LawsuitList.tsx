@@ -1,18 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../shared/components/ui/Button/Button';
 import { Input } from '../../../../shared/components/ui/Input/Input';
 import { Search, Plus, Scale } from 'lucide-react';
 import styles from './LawsuitList.module.css';
+import { api } from '../../../../shared/api/axios';
 
-const MOCK_LAWSUITS = [
-  { id: 1, cnj: '0012345-67.2023.5.02.0001', client: 'João da Silva', type: 'Trabalhista', status: 'Ativo' },
-  { id: 2, cnj: '0098765-43.2022.8.26.0100', client: 'Empresa Tech Ltda', type: 'Cível', status: 'Em Recurso' },
-];
+interface Lawsuit {
+  id: number;
+  cnj_number: string;
+  status: string;
+  client: number;
+  metadata?: any;
+}
 
 export const LawsuitList: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [lawsuits, setLawsuits] = useState<Lawsuit[]>([]);
+  const [clients, setClients] = useState<Record<number, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const [lawsuitsRes, clientsRes] = await Promise.all([
+        api.get('/lawsuits/'),
+        api.get('/clients/')
+      ]);
+      
+      const lawsuitsData = lawsuitsRes.data.results ? lawsuitsRes.data.results : lawsuitsRes.data;
+      const clientsData = clientsRes.data.results ? clientsRes.data.results : clientsRes.data;
+      
+      setLawsuits(lawsuitsData);
+      
+      const clientMap: Record<number, string> = {};
+      clientsData.forEach((c: any) => {
+        clientMap[c.id] = c.name;
+      });
+      setClients(clientMap);
+      
+    } catch (err) {
+      console.error('Erro ao buscar processos', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const filteredLawsuits = lawsuits.filter(lawsuit => 
+    lawsuit.cnj_number.includes(search) || 
+    (clients[lawsuit.client] || '').toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className={styles.container}>
@@ -37,33 +79,39 @@ export const LawsuitList: React.FC = () => {
         </div>
 
         <div className={styles.grid}>
-          {MOCK_LAWSUITS.map(lawsuit => (
-            <div 
-              key={lawsuit.id} 
-              className={styles.gridItem} 
-              onClick={() => navigate(`/lawsuits/${lawsuit.id}`)}
-            >
-              <div className={styles.itemHeader}>
-                <div className={styles.cnjWrapper}>
-                  <Scale size={16} className={styles.icon} />
-                  <span className={styles.cnj}>{lawsuit.cnj}</span>
+          {isLoading ? (
+            <p>Carregando processos...</p>
+          ) : filteredLawsuits.length > 0 ? (
+            filteredLawsuits.map(lawsuit => (
+              <div 
+                key={lawsuit.id} 
+                className={styles.gridItem} 
+                onClick={() => navigate(`/lawsuits/${lawsuit.id}`)}
+              >
+                <div className={styles.itemHeader}>
+                  <div className={styles.cnjWrapper}>
+                    <Scale size={16} className={styles.icon} />
+                    <span className={styles.cnj}>{lawsuit.cnj_number}</span>
+                  </div>
+                  <span className={`${styles.status} ${lawsuit.status === 'ACTIVE' ? styles.statusActive : styles.statusWarning}`}>
+                    {lawsuit.status}
+                  </span>
                 </div>
-                <span className={`${styles.status} ${lawsuit.status === 'Ativo' ? styles.statusActive : styles.statusWarning}`}>
-                  {lawsuit.status}
-                </span>
+                <div className={styles.itemBody}>
+                  <div className={styles.infoGroup}>
+                    <span className={styles.label}>Cliente</span>
+                    <span className={styles.value}>{clients[lawsuit.client] || `ID: ${lawsuit.client}`}</span>
+                  </div>
+                  <div className={styles.infoGroup}>
+                    <span className={styles.label}>Tipo de Ação</span>
+                    <span className={styles.value}>{lawsuit.metadata?.action_type || 'Geral'}</span>
+                  </div>
+                </div>
               </div>
-              <div className={styles.itemBody}>
-                <div className={styles.infoGroup}>
-                  <span className={styles.label}>Cliente</span>
-                  <span className={styles.value}>{lawsuit.client}</span>
-                </div>
-                <div className={styles.infoGroup}>
-                  <span className={styles.label}>Tipo de Ação</span>
-                  <span className={styles.value}>{lawsuit.type}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>Nenhum processo encontrado.</p>
+          )}
         </div>
       </div>
     </div>

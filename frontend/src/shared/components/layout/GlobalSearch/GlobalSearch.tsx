@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, FileText, Users, Scale, Calculator } from 'lucide-react';
 import { Modal } from '../../ui/Modal/Modal';
 import styles from './GlobalSearch.module.css';
+import { api } from '../../../../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -10,7 +12,9 @@ interface GlobalSearchProps {
 
 export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState<any[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -18,13 +22,43 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
     }
   }, [isOpen]);
 
-  // Mock results
-  const results = query.length > 1 ? [
-    { type: 'Client', title: 'Empresa Tech Ltda', icon: Users, path: '/clients/1' },
-    { type: 'Lawsuit', title: 'Processo Trabalhista 000123-24.2023', icon: Scale, path: '/lawsuits/12' },
-    { type: 'Calculation', title: 'Rescisão - João Silva', icon: Calculator, path: '/calculations/45' },
-    { type: 'Document', title: 'Sentença_Final.pdf', icon: FileText, path: '/documents/99' },
-  ] : [];
+  useEffect(() => {
+    const fetchSearch = async () => {
+      if (query.length <= 1) {
+        setResults([]);
+        return;
+      }
+      try {
+        const [clientsRes, lawsuitsRes] = await Promise.all([
+          api.get('/clients/'),
+          api.get('/lawsuits/')
+        ]);
+        
+        const clientsData = clientsRes.data.results || clientsRes.data;
+        const lawsuitsData = lawsuitsRes.data.results || lawsuitsRes.data;
+        
+        const q = query.toLowerCase();
+        
+        const filteredClients = clientsData.filter((c: any) => c.name.toLowerCase().includes(q) || c.document_number.includes(q))
+          .map((c: any) => ({ type: 'Cliente', title: c.name, icon: Users, path: '/clients' }));
+          
+        const filteredLawsuits = lawsuitsData.filter((l: any) => l.cnj_number.includes(q))
+          .map((l: any) => ({ type: 'Processo', title: l.cnj_number, icon: Scale, path: `/lawsuits/${l.id}` }));
+        
+        setResults([...filteredClients, ...filteredLawsuits]);
+      } catch (err) {
+        console.error('Error searching', err);
+      }
+    };
+    
+    const timeoutId = setTimeout(fetchSearch, 300); // debounce
+    return () => clearTimeout(timeoutId);
+  }, [query]);
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    onClose();
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" closeOnOverlayClick={true}>
@@ -34,7 +68,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
           <input
             ref={inputRef}
             className={styles.searchInput}
-            placeholder="O que você está procurando? (Processos, clientes, cálculos...)"
+            placeholder="O que você está procurando? (Processos, clientes...)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -43,12 +77,12 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
 
         {query.length > 1 && (
           <div className={styles.resultsContainer}>
-            <span className={styles.resultsTitle}>Resultados Encontrados</span>
+            <span className={styles.resultsTitle}>Resultados Encontrados ({results.length})</span>
             <div className={styles.resultsList}>
               {results.map((result, idx) => {
                 const Icon = result.icon;
                 return (
-                  <button key={idx} className={styles.resultItem} onClick={onClose}>
+                  <button key={idx} className={styles.resultItem} onClick={() => handleNavigate(result.path)}>
                     <div className={styles.resultIconWrapper}>
                       <Icon size={18} />
                     </div>

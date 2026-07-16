@@ -22,6 +22,10 @@ urlpatterns = [
     path('auth/password-reset/', PasswordResetRequestView.as_view(), name='password_reset_request'),
     path('auth/password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
+    # Dashboard
+    from .views import DashboardSummaryView
+    path('dashboard/summary/', DashboardSummaryView.as_view(), name='dashboard-summary'),
+
     # Endpoints de Cálculo
     path('civil/calculate/', CivilCalculationView.as_view(), name='civil-calculate'),
     path('tax/calculate/', TaxCalculationView.as_view(), name='tax-calculate'),

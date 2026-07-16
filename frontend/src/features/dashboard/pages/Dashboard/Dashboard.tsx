@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Dashboard.module.css';
 import { KpiCard } from '../../components/KpiCard/KpiCard';
 import { RevenueChart } from '../../components/Charts/RevenueChart';
 import { Users, Scale, Calculator, DollarSign } from 'lucide-react';
 import { Button } from '../../../../shared/components/ui/Button/Button';
+import { api } from '../../../../shared/api/axios';
 
 export const Dashboard: React.FC = () => {
+  const [summary, setSummary] = useState({
+    active_clients: 0,
+    active_lawsuits: 0,
+    total_calculations: 0,
+    recent_activities: 0
+  });
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const res = await api.get('/dashboard/summary/');
+        setSummary(res.data);
+      } catch (err) {
+        console.error('Erro ao carregar summary do dashboard', err);
+      }
+    };
+    fetchSummary();
+  }, []);
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -21,31 +41,31 @@ export const Dashboard: React.FC = () => {
       <div className={styles.kpiGrid}>
         <KpiCard 
           title="Processos Ativos" 
-          value="142" 
+          value={String(summary.active_lawsuits)} 
           icon={Scale} 
           color="primary"
-          trend={{ value: 12, isPositive: true }} 
+          trend={{ value: 0, isPositive: true }} 
         />
         <KpiCard 
-          title="Novos Clientes" 
-          value="28" 
+          title="Clientes" 
+          value={String(summary.active_clients)} 
           icon={Users} 
           color="success"
-          trend={{ value: 4, isPositive: true }} 
+          trend={{ value: 0, isPositive: true }} 
         />
         <KpiCard 
           title="Cálculos Realizados" 
-          value="356" 
+          value={String(summary.total_calculations)} 
           icon={Calculator} 
           color="info"
-          trend={{ value: 2, isPositive: false }} 
+          trend={{ value: 0, isPositive: true }} 
         />
         <KpiCard 
           title="Honorários Estimados" 
-          value="R$ 84.5K" 
+          value="R$ 0,00" 
           icon={DollarSign} 
           color="warning"
-          trend={{ value: 18, isPositive: true }} 
+          trend={{ value: 0, isPositive: true }} 
         />
       </div>
 
@@ -68,30 +88,10 @@ export const Dashboard: React.FC = () => {
             <h3>Atividades Recentes</h3>
           </div>
           <div className={styles.activityList}>
-            {/* Mocked activities */}
-            <div className={styles.activityItem}>
-              <div className={styles.activityDot} />
-              <div className={styles.activityContent}>
-                <p><strong>Cálculo Trabalhista</strong> atualizado por João.</p>
-                <span>Há 15 min</span>
-              </div>
-            </div>
-            <div className={styles.activityItem}>
-              <div className={styles.activityDot} />
-              <div className={styles.activityContent}>
-                <p>Novo cliente <strong>Tech Ltda</strong> cadastrado.</p>
-                <span>Há 2 horas</span>
-              </div>
-            </div>
-            <div className={styles.activityItem}>
-              <div className={styles.activityDot} />
-              <div className={styles.activityContent}>
-                <p>Processo <strong>00012-34</strong> arquivado.</p>
-                <span>Ontem</span>
-              </div>
+            <div className={styles.emptyState}>
+              <p>Nenhuma atividade recente registrada.</p>
             </div>
           </div>
-          <Button variant="ghost" className={styles.viewAllBtn}>Ver todo o histórico</Button>
         </div>
       </div>
     </div>

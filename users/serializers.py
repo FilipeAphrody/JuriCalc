@@ -32,12 +32,10 @@ class RegisterSerializer(serializers.Serializer):
         user.save()
         
         # 3. Criar Office
-        # Gere um CNPJ fake ou use uuid para o MVP caso CNPJ seja unique
-        fake_cnpj = str(uuid.uuid4())[:14]
         office = Office.objects.create(
             name=validated_data['company'],
-            cnpj=fake_cnpj,
             plan=plan
+            # cnpj fica nulo inicialmente, ate o usuario preencher no painel
         )
         
         # 4. Criar Membership

@@ -138,3 +138,31 @@ class FamilyAlimonyView(BaseEngineView):
 
     def perform_calculation(self, validated_data):
         return FamilyCalculationService.calculate_alimony_arrears(**validated_data)
+
+from rest_framework.views import APIView
+from clients.models import Client
+from lawsuits.models import Lawsuit
+
+class DashboardSummaryView(APIView):
+    permission_classes = [IsAuthenticated, IsTenantLawyerOrAbove]
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(name='X-Office-ID', type=str, location=OpenApiParameter.HEADER, required=True),
+        ]
+    )
+    def get(self, request):
+        office_id = request.META.get('HTTP_X_OFFICE_ID')
+        
+        clients_count = Client.objects.filter(office_id=office_id).count()
+        lawsuits_count = Lawsuit.objects.filter(office_id=office_id).count()
+        calculations_count = Calculation.objects.filter(office_id=office_id).count()
+        
+        # Pode se expandir no futuro para somar 'total_value' dos calculos
+        
+        return Response({
+            "active_clients": clients_count,
+            "active_lawsuits": lawsuits_count,
+            "total_calculations": calculations_count,
+            "recent_activities": 0 # Pode ser alimentado pelo AuditLog dps
+        }, status=status.HTTP_200_OK)
