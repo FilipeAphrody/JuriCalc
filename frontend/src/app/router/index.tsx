@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Login } from '../../features/auth/pages/Login/Login';
 import { Register } from '../../features/auth/pages/Register/Register';
+import { Recovery } from '../../features/auth/pages/Recovery/Recovery';
+import { ResetPassword } from '../../features/auth/pages/ResetPassword/ResetPassword';
 import { AuthGuard } from '../../features/auth/components/AuthGuard';
 import { MainLayout } from '../../shared/components/layout/MainLayout';
 import { Dashboard } from '../../features/dashboard/pages/Dashboard/Dashboard';
@@ -12,8 +14,6 @@ import { CalculationWizard } from '../../features/calculations/pages/Calculation
 import { CalculationMemory } from '../../features/calculations/pages/CalculationMemory/CalculationMemory';
 import { LandingPage } from '../../features/marketing/pages/LandingPage/LandingPage';
 import { SettingsPage } from '../../features/settings/pages/SettingsPage/SettingsPage';
-
-// O Dashboard real já foi importado, então podemos remover o dummy component
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +27,14 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/recovery',
+    element: <Recovery />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPassword />,
   },
   {
     path: '/dashboard',

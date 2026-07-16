@@ -1,5 +1,5 @@
 from django.urls import path, include
-from users.views import RegisterView, CustomTokenObtainPairView
+from users.views import RegisterView, CustomTokenObtainPairView, PasswordResetRequestView, PasswordResetConfirmView
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -17,6 +17,10 @@ urlpatterns = [
     path('auth/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/register/', RegisterView.as_view(), name='auth_register'),
+    
+    # Recuperação de Senha
+    path('auth/password-reset/', PasswordResetRequestView.as_view(), name='password_reset_request'),
+    path('auth/password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
     # Endpoints de Cálculo
     path('civil/calculate/', CivilCalculationView.as_view(), name='civil-calculate'),
