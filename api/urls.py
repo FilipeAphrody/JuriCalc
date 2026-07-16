@@ -9,7 +9,8 @@ from .views import (
     BankingAmortizationView,
     LaborOvertimeView,
     PensionDelayedView,
-    FamilyAlimonyView
+    FamilyAlimonyView,
+    DashboardSummaryView
 )
 
 urlpatterns = [
@@ -23,7 +24,6 @@ urlpatterns = [
     path('auth/password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 
     # Dashboard
-    from .views import DashboardSummaryView
     path('dashboard/summary/', DashboardSummaryView.as_view(), name='dashboard-summary'),
 
     # Endpoints de Cálculo
