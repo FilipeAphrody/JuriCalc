@@ -1,4 +1,5 @@
 from django.urls import path, include
+from users.views import RegisterView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -16,6 +17,7 @@ urlpatterns = [
     # Autenticação JWT
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/register/', RegisterView.as_view(), name='auth_register'),
 
     # Endpoints de Cálculo
     path('civil/calculate/', CivilCalculationView.as_view(), name='civil-calculate'),

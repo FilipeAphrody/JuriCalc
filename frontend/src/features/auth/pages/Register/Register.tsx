@@ -3,6 +3,7 @@ import { useForm as useRHForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router-dom';
+import { api } from '../../../../shared/api/axios';
 import { Input } from '../../../../shared/components/ui/Input/Input';
 import { Button } from '../../../../shared/components/ui/Button/Button';
 import { Mail, Lock, User, Briefcase } from 'lucide-react';
@@ -30,15 +31,18 @@ export const Register: React.FC = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: RegisterFormInputs) => {
     try {
       setServerError('');
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // redirect to login after successful register
+      await api.post('/auth/register/', {
+        name: data.name,
+        email: data.email,
+        company: data.company,
+        password: data.password
+      });
       navigate('/login');
     } catch (err: any) {
-      setServerError('Ocorreu um erro ao criar a conta. Tente novamente.');
+      setServerError('Ocorreu um erro ao criar a conta. Este e-mail pode já estar em uso.');
     }
   };
 
