@@ -29,10 +29,16 @@ export const handlers = [
   http.post('http://localhost:8000/api/v1/civil/calculate/', async () => {
     // Simulação do resultado de sucesso vindo da Engine de Regras
     return HttpResponse.json({
-      principal: 1000.0,
-      interest_amount: 120.50,
-      honorarium_amount: 254.10,
-      total: 1524.60
+      meta: { calculation_id: 1, version_number: 1 },
+      result: {
+        summary: {
+          principal: 1000.0,
+          interest_amount: 120.50,
+          fees_amount: 254.10,
+          total: 1524.60
+        },
+        memory: []
+      }
     });
   }),
 ];

@@ -47,7 +47,7 @@ describe('CalculationWizard Integration', () => {
     fireEvent.change(principalInput, { target: { value: '1000.00' } });
     
     // Avança para Resultado
-    fireEvent.click(screen.getByRole('button', { name: 'Próxima Etapa' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Gerar Cálculo' }));
 
     // Etapa 2: Resultado
     await waitFor(() => {

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.db import transaction
 from users.models import CustomUser, Office, Plan, Role, Membership
 import uuid
@@ -47,3 +48,20 @@ class RegisterSerializer(serializers.Serializer):
         )
         
         return user
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        
+        # Obter officeId via Membership
+        membership = self.user.memberships.first()
+        office_id = str(membership.office.id) if membership else "1"
+        
+        data['user'] = {
+            'id': self.user.id,
+            'name': f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username,
+            'email': self.user.email,
+            'officeId': office_id
+        }
+        
+        return data
