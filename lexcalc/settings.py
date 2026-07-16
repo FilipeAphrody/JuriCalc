@@ -167,7 +167,7 @@ CORS_ALLOW_ALL_ORIGINS = True # Apenas para ambiente de desenvolvimento
 
 # Produção / InfoSec
 if not DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True'
+    CORS_ALLOW_ALL_ORIGINS = True
     if os.environ.get('CORS_ALLOWED_ORIGINS'):
         CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS').split(',')
     
