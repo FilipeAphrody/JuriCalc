@@ -42,7 +42,13 @@ export const Register: React.FC = () => {
       });
       navigate('/login');
     } catch (err: any) {
-      setServerError('Ocorreu um erro ao criar a conta. Este e-mail pode já estar em uso.');
+      if (err.response?.data?.error) {
+        setServerError(err.response.data.error);
+      } else if (err.response?.data?.email) {
+        setServerError('Este e-mail já está em uso.');
+      } else {
+        setServerError('Ocorreu um erro ao criar a conta. Verifique sua conexão ou tente novamente.');
+      }
     }
   };
 
