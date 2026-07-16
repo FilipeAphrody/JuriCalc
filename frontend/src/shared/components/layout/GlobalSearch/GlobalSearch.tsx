@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, FileText, Users, Scale, Calculator } from 'lucide-react';
+import { Search, Users, Scale } from 'lucide-react';
 import { Modal } from '../../ui/Modal/Modal';
 import styles from './GlobalSearch.module.css';
-import { api } from '../../../../api/axios';
+import { api } from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 interface GlobalSearchProps {
