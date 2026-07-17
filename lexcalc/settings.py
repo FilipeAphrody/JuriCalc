@@ -195,6 +195,14 @@ if not DEBUG:
     CSRF_COOKIE_HTTPONLY = True
     SESSION_COOKIE_HTTPONLY = True
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': False,
+}
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'LexCalc Pro API',
     'DESCRIPTION': 'API para cálculos judiciais',
