@@ -59,6 +59,7 @@ export const Register: React.FC = () => {
         <div className={styles.header}>
           <h2>Crie sua conta</h2>
           <p>Cadastre seu escritório e revolucione sua gestão.</p>
+          <span style={{ fontSize: '10px', color: 'gray' }}>API Target: {api.defaults.baseURL}</span>
         </div>
 
         {serverError && <div className={styles.errorAlert}>{serverError}</div>}
