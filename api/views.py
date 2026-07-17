@@ -154,15 +154,48 @@ class DashboardSummaryView(APIView):
     def get(self, request):
         office_id = request.META.get('HTTP_X_OFFICE_ID')
         
+        from django.db.models.functions import TruncMonth
+        from django.db.models import Count
+        import datetime
+
         clients_count = Client.objects.filter(office_id=office_id).count()
         lawsuits_count = Lawsuit.objects.filter(office_id=office_id).count()
         calculations_count = Calculation.objects.filter(office_id=office_id).count()
         
-        # Pode se expandir no futuro para somar 'total_value' dos calculos
+        # Honorários estimados (Mock dinâmico: 20% de uma causa média de R$ 25.000)
+        estimated_fees = calculations_count * 5000.00
+        
+        # Gráfico: Cálculos por mês nos últimos 6 meses
+        six_months_ago = datetime.date.today() - datetime.timedelta(days=180)
+        chart_data_qs = Calculation.objects.filter(
+            office_id=office_id, 
+            created_at__gte=six_months_ago
+        ).annotate(
+            month=TruncMonth('created_at')
+        ).values('month').annotate(
+            calculos=Count('id')
+        ).order_by('month')
+        
+        chart_data = []
+        months_pt = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+        for entry in chart_data_qs:
+            month_name = months_pt[entry['month'].month - 1]
+            chart_data.append({
+                "name": month_name,
+                "calculos": entry['calculos']
+            })
+            
+        # Se não houver dados suficientes, preenche com meses zerados
+        if not chart_data:
+            for i in range(5, -1, -1):
+                m = (datetime.date.today() - datetime.timedelta(days=30*i)).month
+                chart_data.append({"name": months_pt[m - 1], "calculos": 0})
         
         return Response({
             "active_clients": clients_count,
             "active_lawsuits": lawsuits_count,
             "total_calculations": calculations_count,
-            "recent_activities": 0 # Pode ser alimentado pelo AuditLog dps
+            "estimated_fees": f"R$ {estimated_fees:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.'),
+            "recent_activities": 0,
+            "chart_data": chart_data
         }, status=status.HTTP_200_OK)

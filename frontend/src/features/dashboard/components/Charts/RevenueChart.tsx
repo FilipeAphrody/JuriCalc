@@ -1,17 +1,11 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'Jan', calculos: 40 },
-  { name: 'Fev', calculos: 30 },
-  { name: 'Mar', calculos: 20 },
-  { name: 'Abr', calculos: 27 },
-  { name: 'Mai', calculos: 18 },
-  { name: 'Jun', calculos: 23 },
-  { name: 'Jul', calculos: 34 },
-];
+interface RevenueChartProps {
+  data: Array<{ name: string; calculos: number }>;
+}
 
-export const RevenueChart: React.FC = () => {
+export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <ResponsiveContainer width="100%" height="100%">
@@ -27,7 +21,7 @@ export const RevenueChart: React.FC = () => {
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
           <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-tertiary)', fontSize: 12 }} dy={10} />
-          <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-tertiary)', fontSize: 12 }} />
+          <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--color-text-tertiary)', fontSize: 12 }} allowDecimals={false} />
           <RechartsTooltip 
             contentStyle={{ backgroundColor: 'var(--color-bg-surface)', borderColor: 'var(--color-border)', borderRadius: '8px', color: 'var(--color-text-primary)' }}
             itemStyle={{ color: 'var(--color-primary)' }}

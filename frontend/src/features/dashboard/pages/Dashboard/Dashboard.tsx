@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import { KpiCard } from '../../components/KpiCard/KpiCard';
 import { RevenueChart } from '../../components/Charts/RevenueChart';
@@ -11,8 +12,11 @@ export const Dashboard: React.FC = () => {
     active_clients: 0,
     active_lawsuits: 0,
     total_calculations: 0,
-    recent_activities: 0
+    estimated_fees: 'R$ 0,00',
+    recent_activities: 0,
+    chart_data: []
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -34,7 +38,13 @@ export const Dashboard: React.FC = () => {
           <p className={styles.subtitle}>Visão geral do seu escritório jurídico.</p>
         </div>
         <div className={styles.actions}>
-          <Button variant="primary" leftIcon={<Calculator size={18}/>}>Novo Cálculo</Button>
+          <Button 
+            variant="primary" 
+            leftIcon={<Calculator size={18}/>}
+            onClick={() => navigate('/calculations')}
+          >
+            Novo Cálculo
+          </Button>
         </div>
       </header>
 
@@ -62,7 +72,7 @@ export const Dashboard: React.FC = () => {
         />
         <KpiCard 
           title="Honorários Estimados" 
-          value="R$ 0,00" 
+          value={summary.estimated_fees} 
           icon={DollarSign} 
           color="warning"
           trend={{ value: 0, isPositive: true }} 
@@ -79,7 +89,13 @@ export const Dashboard: React.FC = () => {
             </select>
           </div>
           <div className={styles.chartWrapper}>
-            <RevenueChart />
+            {summary.chart_data.length > 0 ? (
+              <RevenueChart data={summary.chart_data} />
+            ) : (
+              <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--color-text-tertiary)'}}>
+                Carregando dados...
+              </div>
+            )}
           </div>
         </div>
 
