@@ -41,7 +41,6 @@ export const CalculationWizard: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await api.post('/civil/calculate/', {
-          client_id: 1, // Fake client for MVP
           title: "Cálculo E2E",
           principal: parseFloat(formData.principal),
           start_date: formData.start_date,
@@ -108,8 +107,8 @@ export const CalculationWizard: React.FC = () => {
           {currentStep === 1 && (
             <div className={styles.formGrid}>
               <Input name="principal" value={formData.principal} onChange={handleChange} label="Valor Principal (R$)" placeholder="Ex: 1000.00" type="number" />
-              <Input name="start_date" value={formData.start_date} onChange={handleChange} label="Data Inicial" type="date" />
-              <Input name="end_date" value={formData.end_date} onChange={handleChange} label="Data Final" type="date" />
+              <Input name="start_date" value={formData.start_date} onChange={handleChange} label="Data Inicial" type="date" lang="pt-BR" />
+              <Input name="end_date" value={formData.end_date} onChange={handleChange} label="Data Final" type="date" lang="pt-BR" />
               <Select 
                 name="index_name"
                 value={formData.index_name}
