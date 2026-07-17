@@ -32,7 +32,29 @@ export const CalculationWizard: React.FC = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    let { name, value } = e.target;
+    
+    // Máscara definitiva para Datas em formato Brasileiro (DD/MM/AAAA)
+    if (name === 'start_date' || name === 'end_date') {
+      value = value.replace(/\D/g, '');
+      if (value.length > 8) value = value.substring(0, 8);
+      if (value.length > 4) {
+        value = value.replace(/^(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+      } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{1,2})/, '$1/$2');
+      }
+    }
+    
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Converte DD/MM/AAAA para YYYY-MM-DD (formato do Banco de Dados / API)
+  const parseDateForApi = (dateStr: string) => {
+    const parts = dateStr.split('/');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return dateStr;
   };
 
   const handleNext = async () => {
@@ -43,8 +65,8 @@ export const CalculationWizard: React.FC = () => {
         const response = await api.post('/civil/calculate/', {
           title: "Cálculo E2E",
           principal: parseFloat(formData.principal),
-          start_date: formData.start_date,
-          end_date: formData.end_date,
+          start_date: parseDateForApi(formData.start_date),
+          end_date: parseDateForApi(formData.end_date),
           index_name: formData.index_name,
           interest_rate: parseFloat(formData.interest_rate) / 100,
           fees_percentage: parseFloat(formData.honorarium_rate) / 100,
@@ -108,8 +130,8 @@ export const CalculationWizard: React.FC = () => {
           {currentStep === 1 && (
             <div className={styles.formGrid}>
               <Input name="principal" value={formData.principal} onChange={handleChange} label="Valor Principal (R$)" placeholder="Ex: 1000.00" type="number" />
-              <Input name="start_date" value={formData.start_date} onChange={handleChange} label="Data Inicial" type="date" lang="pt-BR" />
-              <Input name="end_date" value={formData.end_date} onChange={handleChange} label="Data Final" type="date" lang="pt-BR" />
+              <Input name="start_date" value={formData.start_date} onChange={handleChange} label="Data Inicial" placeholder="DD/MM/AAAA" type="text" maxLength={10} />
+              <Input name="end_date" value={formData.end_date} onChange={handleChange} label="Data Final" placeholder="DD/MM/AAAA" type="text" maxLength={10} />
               <Select 
                 name="index_name"
                 value={formData.index_name}
