@@ -47,13 +47,14 @@ export const CalculationWizard: React.FC = () => {
           end_date: formData.end_date,
           index_name: formData.index_name,
           interest_rate: parseFloat(formData.interest_rate) / 100,
-          honorarium_rate: parseFloat(formData.honorarium_rate) / 100,
+          fees_percentage: parseFloat(formData.honorarium_rate) / 100,
         });
         setResult(response.data.result);
         setCurrentStep(2);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Erro ao gerar cálculo", err);
-        alert("Erro ao processar o cálculo. Verifique os dados.");
+        const errorMsg = err.response ? JSON.stringify(err.response.data) : err.message;
+        alert(`Erro ao processar o cálculo: ${errorMsg}`);
       } finally {
         setIsLoading(false);
       }
