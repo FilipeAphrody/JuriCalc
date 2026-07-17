@@ -165,6 +165,16 @@ REST_FRAMEWORK = {
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = True # Apenas para ambiente de desenvolvimento
 
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-office-id",
+)
+
 # Produção / InfoSec
 if not DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
