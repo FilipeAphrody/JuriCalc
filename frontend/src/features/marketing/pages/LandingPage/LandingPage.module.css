@@ -18,6 +18,7 @@
   width: 100%;
   z-index: 100;
   border-bottom: 1px solid var(--color-border);
+  box-sizing: border-box;
 }
 
 [data-theme="dark"] .navbar {
@@ -114,8 +115,21 @@
 
 .heroActions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-4);
   margin-top: var(--space-2);
+  width: 100%;
+}
+
+.heroActions a {
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+}
+
+.heroActions a button, .heroActions > button {
+  width: 100%;
 }
 
 .trustHint {
@@ -319,9 +333,12 @@
 }
 
 @media (max-width: 768px) {
-  .title { font-size: 2.5rem; }
-  .heroActions { flex-direction: column; }
+  .navbar { padding: var(--space-4); }
+  .title { font-size: 2.2rem; }
+  .hero { padding: 120px var(--space-4) 60px; }
+  .heroActions { flex-direction: column; align-items: center; }
   .grid { grid-template-columns: 1fr; }
+  .features, .pricing, .footer { padding: 60px var(--space-4); }
   .pricingGrid { flex-direction: column; align-items: center; }
   .priceCardPro { transform: none; }
   .footerContent { flex-direction: column; gap: var(--space-4); text-align: center; }
