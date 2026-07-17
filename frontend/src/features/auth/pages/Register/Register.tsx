@@ -47,7 +47,8 @@ export const Register: React.FC = () => {
       } else if (err.response?.data?.email) {
         setServerError('Este e-mail já está em uso.');
       } else {
-        setServerError('Ocorreu um erro ao criar a conta. Verifique sua conexão ou tente novamente.');
+        const rawError = err.response ? `Status ${err.response.status}: ${JSON.stringify(err.response.data).substring(0, 50)}` : err.message;
+        setServerError(`Falha Crítica (Envie para o Dev): ${rawError}`);
       }
     }
   };
